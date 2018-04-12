@@ -1,28 +1,20 @@
 import React, { Component } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class Todo extends Component {
     constructor(props) {
         super();
-        //inicializar o estado do componente
-        this.state = {text: ""};
-        this.handleDelete = props.handleDelete;
-        //colocar a variavel "this" no escopo da funcao
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event) {
-        //pegar o texto associado ao evento e atualizar o estado
-        alert(event.target.value);
-        let text = event.target.value;
-        this.setState({text: text});
     }
 
     render() {
         return (
-            <div>
-                <input type="text" value={this.state.text} onChange={this.handleChange} />
-                <h2>{this.props.id}</h2>
-                <button onClick={() => this.handleDelete(this.props.id)}>Delete todo</button>
+            <div className="input-group form-group"> 
+                    <input className="form-control" type="text" value={this.props.text} />
+                <div className="input-group-append">
+                    <button className="btn btn-danger" onClick={() => this.props.handleDelete(this.props.id)}>
+                        Delete
+                    </button>
+                </div>
             </div>
         )
     }
@@ -33,10 +25,11 @@ class TodoContainer extends Component {
         super();
         
 
-        this.state = {todos: {}, nextId: 0};
+        this.state = {todos: {}, nextId: 0, text: ""};
 
         this.handleDelete = this.handleDelete.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     renderTodos() {
@@ -53,17 +46,26 @@ class TodoContainer extends Component {
     handleAdd() {
         this.setState((state) => {
             let todoId = state.nextId;
-            let todo = <Todo handleDelete={this.handleDelete} id={todoId} />;
+            let todo = <Todo handleDelete={this.handleDelete} id={todoId} text={state.text}/>;
             state.todos[todoId] = todo;
             state.nextId += 1;
             return state; 
         });
     }
 
+    handleInputChange(event) {
+        this.setState({text: event.target.value});
+    }
+
     render() {
         return (
-            <div id="todo-container">
-                <button onClick={this.handleAdd}>Add todo</button>
+            <div id="todo-container" className="container">
+                <div className="input-group form-group">
+                    <div className="input-group-prepend">
+                        <button type="button" className="btn btn-info" onClick={this.handleAdd}>Add todo</button>
+                    </div>
+                    <input type="text" class="form-control" value={this.inputText} onChange={this.handleInputChange} />
+                </div>
                 <div id="todos">
                     {this.renderTodos()}
                 </div>
